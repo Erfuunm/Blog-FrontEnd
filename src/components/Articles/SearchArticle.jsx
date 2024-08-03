@@ -1,6 +1,10 @@
+import { useContext } from "react";
+import { ArticleContext } from "../../Context/ArticleContext";
 import { PURPLE } from "../../helpers/colors";
 
 const SearchArticle = () => {
+  const { articleQuery , articleSearch } = useContext(ArticleContext);
+
   return (
     <div className="input-group mx-2 w-75" dir="ltr">
       <span
@@ -13,11 +17,12 @@ const SearchArticle = () => {
       <input
         dir="rtl"
         type="text"
+        value={articleQuery.text}
+        onChange={articleSearch}
         className="form-control"
-        placeholder="جستجو مقاله"
+        placeholder="جستجوی مقاله"
         aria-label="Search"
         aria-describedby="basic-addon1"
-        
       />
     </div>
   );

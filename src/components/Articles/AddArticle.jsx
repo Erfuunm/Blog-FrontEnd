@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
-
+import { useContext } from "react";
+import {ArticleContext} from "../../Context/ArticleContext"
 import { Spinner } from "../";
 import { COMMENT, GREEN, PURPLE } from "../../helpers/colors";
 
-const AddArticle = ({
-  loading,
-  article,
-  setArticleInfo,
-  groups,
-  createArticleForm,
-}) => {
+const AddArticle = () => {
+
+  const { loading, article, onArticleChange, groups, createArticle } =
+  useContext(ArticleContext);
+
   return (
     <>
       {loading ? (
@@ -43,13 +42,13 @@ const AddArticle = ({
               <hr style={{ backgroundColor: GREEN }} />
               <div className="row mt-5 pt-5 pe-5 me-5 ">
                 <div className="col-md-4">
-                  <form onSubmit={createArticleForm}>
+                  <form onSubmit={createArticle}>
                   <div className="mb-2">
                       <input
                         name="title"
                         type="text"
                         value={article.title}
-                        onChange={setArticleInfo}
+                        onChange={onArticleChange}
                         className="form-control"
                         placeholder="موضوع مقاله"
                         required={true}
@@ -60,7 +59,7 @@ const AddArticle = ({
                         type="text"
                         name="description"
                         value={article.description}
-                        onChange={setArticleInfo}
+                        onChange={onArticleChange}
                         className="form-control"
                         required={true}
                         placeholder="توضیحات"
@@ -71,7 +70,7 @@ const AddArticle = ({
                         type="text"
                         name="author"
                         value={article.author}
-                        onChange={setArticleInfo}
+                        onChange={onArticleChange}
                         className="form-control"
                         required={true}
                         placeholder="نویسنده"
@@ -82,7 +81,7 @@ const AddArticle = ({
                         type="text"
                         name="category"
                         value={article.category}
-                        onChange={setArticleInfo}
+                        onChange={onArticleChange}
                         className="form-control"
                         required={true}
                         placeholder="عنوان"
@@ -124,6 +123,7 @@ const AddArticle = ({
                 </div>
               </div>
             </div>
+            
           </section>
         </>
       )}

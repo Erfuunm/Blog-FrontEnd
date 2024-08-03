@@ -1,9 +1,13 @@
 
+import { useLocation } from "react-router-dom";
 
 import { BACKGROUND, PURPLE } from "../helpers/colors";
 import SearchArticle from "./Articles/SearchArticle";
 
 const Navbar = () => {
+
+  const location = useLocation();
+
   return (
     <nav
       className="navbar navbar-dark navbar-expand-sm shadow-lg"
@@ -13,14 +17,16 @@ const Navbar = () => {
         <div className="row w-100">
           <div className="col">
             <div className="navbar-brand">
-              <i className="fas fa-id-badge" style={{ color: PURPLE }} />{" "}
-              وب اپلیکیشن مدیریت{"  "}
+              <i className="fas fa-id-badge" style={{ color: PURPLE }} /> وب
+              اپلیکیشن مدیریت{"  "}
               <span style={{ color: PURPLE }}>مقالات</span>
             </div>
           </div>
-          <div className="col">
-            <SearchArticle />
-          </div>
+          {location.pathname === "/articles" ? (
+            <div className="col">
+              <SearchArticle />
+            </div>
+          ) : null}
         </div>
       </div>
     </nav>

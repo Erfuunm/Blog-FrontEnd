@@ -1,6 +1,7 @@
 import { CURRENTLINE, CYAN, ORANGE, PURPLE, RED } from "../../helpers/colors";
+import { Link } from "react-router-dom";
 
-const Article = ({article}) => {
+const Article = ({article , deleteArticle}) => {
     return (
         <div className="col-md-6">
           <div style={{ backgroundColor: CURRENTLINE }} className="card my-3 mx-2">
@@ -34,16 +35,29 @@ const Article = ({article}) => {
                   </ul>
                 </div>
                 <div className="col-md-1 col-sm-1 d-flex flex-column align-items-center">
-                  <button className="btn my-1" style={{ backgroundColor: ORANGE }}>
-                    <i className="fa fa-eye" />
-                  </button>
-    
-                  <button className="btn my-1" style={{ backgroundColor: CYAN }}>
-                    <i className="fa fa-pen" />
-                  </button>
-                  <button className="btn my-1" style={{ backgroundColor: RED }}>
-                    <i className="fa fa-trash" />
-                  </button>
+                <Link
+                to={`/articles/${article.id}`}
+                className="btn my-1"
+                style={{ backgroundColor: ORANGE }}
+              >
+                <i className="fa fa-eye" />
+              </Link>
+
+              <Link
+                to={`/articles/edit/${article.id}`}
+                className="btn my-1"
+                style={{ backgroundColor: CYAN }}
+              >
+                <i className="fa fa-pen" />
+              </Link>
+              <button
+                onClick={deleteArticle}
+                className="btn my-1"
+                style={{ backgroundColor: RED }}
+              >
+                <i className="fa fa-trash" />
+              </button>
+
                 </div>
               </div>
             </div>

@@ -1,161 +1,204 @@
 
 import { useState , useEffect } from "react";
 import { Navigate, Route, Routes , useNavigate } from "react-router-dom";
-
-import {getAllArticles , getAllGroups , createArticle} from "./services/ArticleService"
+import { confirmAlert } from "react-confirm-alert";
+import {getAllArticles , getAllGroups , createArticle, deleteArticle} from "./services/ArticleService"
 import './App.css';
 import { AddArticle, Article, EditArticle, Navbar, ViewArticle } from './components';
 import Articles from './components/Articles/Articles';
 import axios from "axios";
+import { ArticleContext } from "./Context/ArticleContext";
+import {
+  CURRENTLINE,
+  FOREGROUND,
+  PURPLE,
+  YELLOW,
+  COMMENT,
+} from "./helpers/colors";
 
 
 const App = () => {
 
 
-
-
-  const ArtData = [{
-
-    ID : 1,
-    Title : "Harry Potter",
-    Description : "string",
-    Author : "Jk Rolling",
-    PblId : 0 ,
-    PublisherID : 1
-
-  }]
-
   const [loading, setLoading] = useState(false);
-  const [getArticles, setArticles] = useState([]);
-  const [getGroups, setGroups] = useState([]);
-  const [getArticle, setArticle] = useState({
-    title : "",
-    description : "",
-    author : "",
-    group: "",
-  })
+  const [articles, setArticles] = useState([]);
+  const [filteredArticles, setFilteredArticles] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [article, setArticle] = useState({});
+  const [articleQuery, setArticleQuery] = useState({ text: "" });
 
   const navigate = useNavigate();
 
 
   const getdata = () => {
 
-    getAllArticles()
-    .then((result) =>{
+
+
+    getAllArticles().then((result) =>{
       setArticles(result.data)
-      console.log(getArticles);
+      setFilteredArticles(result.data)
+      console.log(result);
     })
     .catch((error) =>{
       console.log(error);
     });
 
-     axios.get("https://localhost:7282/api/Category")
-    .then((response) =>{
+     getAllGroups().then((response) =>{
       setGroups(response.data)
-      console.log(getGroups);
     })
     .catch((error) =>{
       console.log(error);
-    })
+    });
 
   }
 
-
   useEffect(() =>{
    getdata();
-  }, [getdata])
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       setLoading(true);
-
-  //       const { data: articleData } = await axios.get(
-  //         "http://localhost:9000/articles"
-  //       );
-  //       const { data: groupsData } = await axios.get(
-  //         "http://localhost:9000/groups"
-  //       );
-  //       setArticles(articleData);
-  //       setGroups(groupsData);
-
-  //       setLoading(false);
-  //     } catch (err) {
-  //       console.log(err.message);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
+  }, [])
 
 
   const createArticleForm = async (event) => {
     event.preventDefault();
     try {
-      const { status } = await createArticle(getArticle);
+      setLoading((prevLoading) => !prevLoading);
+      const { status, data } = await createArticle(article);
 
       if (status === 201) {
+        const allArticles = [...articles, data];
+
+        setArticles(allArticles);
+        setFilteredArticles(allArticles);
+
         setArticle({});
-        navigate("/articles");
+        setLoading((prevLoading) => !prevLoading);
+        navigate("/contacts");
       }
     } catch (err) {
       console.log(err.message);
+      setLoading((prevLoading) => !prevLoading);
     }
   };
 
 
-  const setArticleInfo = (event) => {
+  const onArticleChange = (event) => {
     setArticle({
-      ...getArticle,
+      ...article,
       [event.target.name]: event.target.value,
     });
   };
 
+  const confirmDelete = (articleId, ArticleFullname) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div
+            dir="rtl"
+            style={{
+              backgroundColor: CURRENTLINE,
+              border: `1px solid ${PURPLE}`,
+              borderRadius: "1em",
+            }}
+            className="p-4"
+          >
+            <h1 style={{ color: YELLOW }}>پاک کردن مقاله</h1>
+            <p style={{ color: FOREGROUND }}>
+              مطمئنی که میخوای مقاله {ArticleFullname} رو پاک کنی ؟
+            </p>
+            <button
+              onClick={() => {
+                removeArticle(articleId);
+                onClose();
+              }}
+              className="btn mx-2"
+              style={{ backgroundColor: PURPLE }}
+            >
+              مطمئن هستم
+            </button>
+            <button
+              onClick={onClose}
+              className="btn"
+              style={{ backgroundColor: COMMENT }}
+            >
+              انصراف
+            </button>
+          </div>
+        );
+      },
+    });
+  };
+
+
+  const removeArticle = async (articleId) => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(`https://localhost:7282/api/Article/${articleId}`);
+      
+      if (response === 200) {
+
+        getAllArticles().then((result) =>{
+          setArticles(result.data)     
+        })
+        .catch((error) =>{
+          console.log(error);
+        });
+
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log(err.message);
+      setLoading(false);
+    }
+  };
+
+  const articleSearch = (event) => {
+    setArticleQuery({ ...articleQuery, text: event.target.value });
+    const allArticles = articles.filter((article) => {
+      return article.title
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase());
+    });
+
+    setFilteredArticles(allArticles);
+  };
 
 
 
   return (
-
-
-    <div className="App  "  >
-
-      
-    <Navbar />
-    
-      <Routes>
-        <Route path="/" element={<Navigate to="/articles" />} />
-        <Route
-          path="/articles"
-          element={<Articles articles={getArticles} groups={getGroups} loading={loading} />}
-        />
-        
-
-        <Route
-          path="/articles/add"
-          element={
-            <AddArticle
-              loading={loading}
-              setArticleInfo={setArticleInfo}
-              article={getArticle}
-              groups={getGroups}
-             createArticleForm ={createArticleForm}
-            />
-          }
-        />     
+    <ArticleContext.Provider value={{
+      loading,
+      setLoading,
+      article,
+      setArticles,
+      setFilteredArticles,
+      articleQuery,
+      articles,
+      filteredArticles,
+      groups,
+      onArticleChange,
+      deleteArticle: confirmDelete,
+      createArticle: createArticleForm,
+      articleSearch,
+    }} >
 
 
 
-        <Route path="/articles/:articleId" element={<ViewArticle />} />
-        
-        <Route path="/articles/edit/:articleId" element={<EditArticle />} />
+   <div className="App  "   >
+       <Navbar />
+
+       <Routes>
+          <Route path="/home" element={<Navigate to="/articles" />} />
+          <Route path="/articles" element={<Articles />} />
+          <Route path="/articles/add" element={<AddArticle />} />
+          <Route path="/articles/:articleId" element={<ViewArticle />} />
+          <Route path="/articles/edit/:articleId" element={<EditArticle />} />
+          
       </Routes>
-   
-      
+
+</div>
+
+
+    </ArticleContext.Provider>
  
-    </div>
   );
 }
 
