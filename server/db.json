@@ -1,0 +1,44 @@
+{
+    "articles": [
+      {
+        "fullname": "Harry Potter",
+        "photo": "",
+        "mobile": "09361112244",
+        "email": "younes.gh@chmail.ir",
+        "job": "",
+        "group": "1",
+        "id": 1
+      },
+      {
+        "fullname": "Star Wars",
+        "photo": "",
+        "mobile": "09121112425",
+        "email": "iman@madaeny.com",
+        "job": "",
+        "group": "1",
+        "id": 2
+      }
+    ],
+    "groups": [
+      {
+        "id": "1",
+        "name": "Scince Fiction"
+      },
+      {
+        "id": "2",
+        "name": "History"
+      },
+      {
+        "id": "3",
+        "name": "Thriller"
+      },
+      {
+        "id": "4",
+        "name": "Drama"
+      },
+      {
+        "id": "5",
+        "name": "Lovely"
+      }
+    ]
+  }
