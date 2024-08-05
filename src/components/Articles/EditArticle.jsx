@@ -4,42 +4,38 @@ import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { ArticleContext } from "../../Context/ArticleContext";
-import { getArticle, UpdateArticle } from "../../services/ArticleService";
 
 import { Spinner } from "../";
 import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
-import axios from "axios";
+import { useApi } from '../../Context/ApiProvider';
 
 
 const EditArticle = () => {
 
   const { articleId } = useParams();
   const { articles , setArticles , setFilteredArticles , loading , setLoading , groups } = useContext(ArticleContext);
-
+  const api = useApi();
+  
   const [article, setArticle] = useState({});
 
 
   const navigate = useNavigate();
+   
+  //***** Fetch Data  *****/
+
 
   const getdata = () => {
-
-    
-    getArticle(articleId).then((result) =>{
-
-      
-      setArticle(result.data);
-      
-   
-      })
-      .catch((error) =>{
-        console.log(error);
-      });
-
+    (async () => {
+      const response = await api.get('/Article/' + articleId);
+      setArticle(response.ok ? response.body : null);
+    })();
   }
 
   useEffect(() =>{
   getdata();
   }, [])
+
+ //***** Fetch Data  *****/
 
 
   const onArticleChange = (event) => {
@@ -50,11 +46,13 @@ const EditArticle = () => {
   };
 
   const submitForm = async (event) => {
+
+
     event.preventDefault();
     try {
       setLoading(true);
      
-      const{ data , response }= await UpdateArticle(article , articleId);
+      const{ data , response }= await api.put('/Article/' + articleId , article  );
 
 
       if (response === 200) {
@@ -77,7 +75,7 @@ const EditArticle = () => {
     }
   };
 
-
+ //***** Fetch Data  *****/
 
 
     return (

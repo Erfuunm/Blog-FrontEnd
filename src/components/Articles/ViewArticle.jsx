@@ -1,40 +1,36 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import { ArticleContext } from "../../Context/ArticleContext";
-import { getArticle, getGroup } from "../../services/ArticleService";
+import { useApi } from '../../Context/ApiProvider';
 import { Spinner } from "../";
 import { CURRENTLINE, CYAN, PURPLE } from "../../helpers/colors";
 
 
 const ViewArticle = () => {
 
+  const api = useApi();
+
   const { articleId } = useParams();
 
   const [viewArticle, setViewArticle] = useState({});
 
-  const { loading, setLoading } = useContext(ArticleContext);
+  const { loading } = useContext(ArticleContext);
+
+  //***** Fetch Data  *****/
 
 
   const getdata = () => {
-
-    
-    getArticle(articleId).then((result) =>{
-
-      
-      setViewArticle(result.data);
-      
-   
-      })
-      .catch((error) =>{
-        console.log(error);
-      });
-
+    (async () => {
+      const response = await api.get('/Article/' + articleId);
+      setViewArticle(response.ok ? response.body : null);
+    })();
   }
 
   useEffect(() =>{
   getdata();
   }, [getdata])
+
+ //***** Fetch Data  *****/
 
     return (
       <>

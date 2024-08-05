@@ -1,13 +1,14 @@
-
 import { useState , useEffect } from "react";
 import { Navigate, Route, Routes , useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
-import {getAllArticles , getAllGroups , createArticle, deleteArticle} from "./services/ArticleService"
+import {getAllArticles , getAllGroups , createArticle} from "./services/ArticleService"
 import './App.css';
-import { AddArticle, Article, EditArticle, Navbar, ViewArticle } from './components';
+import { AddArticle, EditArticle, Navbar, ViewArticle } from './components';
 import Articles from './components/Articles/Articles';
 import axios from "axios";
 import { ArticleContext } from "./Context/ArticleContext";
+import FlashProvider from './Context/FlashProvider'
+import  Home  from "./pages/Home"
 import {
   CURRENTLINE,
   FOREGROUND,
@@ -15,6 +16,9 @@ import {
   YELLOW,
   COMMENT,
 } from "./helpers/colors";
+import ApiProvider from "./Context/ApiProvider";
+import LoginPage from "./pages/LoginPage";
+import RegistrationPage from "./pages/RegistrationPage";
 
 
 const App = () => {
@@ -131,6 +135,11 @@ const App = () => {
   const removeArticle = async (articleId) => {
     try {
       setLoading(true);
+
+      // const allArticles = [...articles];
+
+      // const updatedArticle = articles.filter(c => c.id != articleId)
+
       const response = await axios.delete(`https://localhost:7282/api/Article/${articleId}`);
       
       if (response === 200) {
@@ -180,22 +189,32 @@ const App = () => {
       articleSearch,
     }} >
 
+   <div className="App " >
 
+<FlashProvider>
 
-   <div className="App  "   >
-       <Navbar />
+<ApiProvider>
 
-       <Routes>
-          <Route path="/home" element={<Navigate to="/articles" />} />
-          <Route path="/articles" element={<Articles />} />
-          <Route path="/articles/add" element={<AddArticle />} />
-          <Route path="/articles/:articleId" element={<ViewArticle />} />
-          <Route path="/articles/edit/:articleId" element={<EditArticle />} />
-          
+<Navbar />
+      <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/articles" element={<Articles />} />
+      <Route path="/articles/add" element={<AddArticle />} />
+      <Route path="/articles/:articleId" element={<ViewArticle />} />
+      <Route path="/articles/edit/:articleId" element={<EditArticle />} />
+      <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegistrationPage />} />
+      <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
-</div>
 
+</ApiProvider>
+
+  
+</FlashProvider>
+   
+    
+   </div>
 
     </ArticleContext.Provider>
  

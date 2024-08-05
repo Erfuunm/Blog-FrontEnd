@@ -6,7 +6,7 @@ export const getAllArticles = () =>{
     const url = `${SERVER_URL}/api/Article`;
     return axios.get(url);
 }
-
+     
 
 export const getArticle = (articleId) => {
     const url = `${SERVER_URL}/api/Article/${articleId}`;
