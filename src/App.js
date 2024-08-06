@@ -2,6 +2,8 @@ import { useState , useEffect } from "react";
 import { Navigate, Route, Routes , useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import {getAllArticles , getAllGroups , createArticle} from "./services/ArticleService"
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
 import './App.css';
 import { AddArticle, EditArticle, Navbar, ViewArticle } from './components';
 import Articles from './components/Articles/Articles';
@@ -19,6 +21,7 @@ import {
 import ApiProvider from "./Context/ApiProvider";
 import LoginPage from "./pages/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage";
+import UserProvider from "./Context/UserProvider";
 
 
 const App = () => {
@@ -190,27 +193,32 @@ const App = () => {
     }} >
 
    <div className="App " >
-
 <FlashProvider>
+  <ApiProvider>
+    <UserProvider>
+      <Navbar />
+        <Routes>
+               <Route path="/login" element={
+               <PublicRoute><LoginPage /></PublicRoute>} />
 
-<ApiProvider>
+               <Route path="/register" element={
+               <PublicRoute><RegistrationPage /></PublicRoute>} />
 
-<Navbar />
-      <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/articles" element={<Articles />} />
-      <Route path="/articles/add" element={<AddArticle />} />
-      <Route path="/articles/:articleId" element={<ViewArticle />} />
-      <Route path="/articles/edit/:articleId" element={<EditArticle />} />
-      <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegistrationPage />} />
-      <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-
-
-</ApiProvider>
-
-  
+              <Route path="*" element={
+                  <PrivateRoute>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/articles" element={<Articles />} />
+                      <Route path="/articles/add" element={<AddArticle />} />
+                      <Route path="/articles/:articleId" element={<ViewArticle />} />
+                      <Route path="/articles/edit/:articleId" element={<EditArticle />} />
+                      <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </PrivateRoute>
+              } />
+        </Routes>
+   </UserProvider>
+ </ApiProvider>
 </FlashProvider>
    
     

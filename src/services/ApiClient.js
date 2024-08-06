@@ -12,10 +12,13 @@ export default class ApiClient {
   
       let response;
       try {
+        
         response = await fetch(this.base_url + options.url + query, {
+          
           method: options.method,
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
             ...options.headers,
           },
           body: options.body ? JSON.stringify(options.body) : null,
@@ -57,7 +60,11 @@ export default class ApiClient {
     }
 
     async login(username, password) {
-        const response = await this.post('/tokens', null, {
+  
+        const response = await this.post('/Auth/login/' , {
+          userName: username,
+          password: password
+        } , {
           headers: {
             Authorization:  'Basic ' + btoa(username + ":" + password)
           }
@@ -65,21 +72,22 @@ export default class ApiClient {
         if (!response.ok) {
           return response.status === 401 ? 'fail' : 'error';
         }
-        localStorage.setItem('accessToken', response.body.access_token);
+        localStorage.setItem('accessToken', response.body.message);
         return 'ok';
       }
 
-      async logout() {
-        await this.delete('/tokens');
-        localStorage.removeItem('accessToken');
-      }
+   
 
-      isAuthenticated() {
-        return localStorage.getItem('accessToken') !== null;
-      }
+    isAuthenticated() {
+      return localStorage.getItem('accessToken') !== null;
+    }
 
-
-
-
+    async logout() {
       
+      localStorage.removeItem('accessToken');
+    }
+
+
+
+
   }

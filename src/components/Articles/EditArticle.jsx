@@ -45,6 +45,11 @@ const EditArticle = () => {
     });
   };
 
+
+  const logOut = (event) =>{
+    localStorage.clear();
+  }
+
   const submitForm = async (event) => {
 
 
@@ -198,6 +203,14 @@ const EditArticle = () => {
                 height="300px"
                 style={{ opacity: "60%" }}
               />
+            </div>
+
+            <div>
+              <button onClick={logOut}>
+                
+
+              </button>
+
             </div>
           </section>
         </>
