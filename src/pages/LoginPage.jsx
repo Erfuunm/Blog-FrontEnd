@@ -55,26 +55,24 @@ function LoginPage() {
     }
   };
 
-
-
-
-
     return (
 
    <>
-      <h1>Login</h1>
+      <h1 className='text-white mt-5 pt-5'>Login</h1>
       <Form onSubmit={onSubmit}>
+      <br/>
         <InputField
           name="username" label="Username or email address"
           error={formErrors.username} fieldRef={usernameField} />
+          <br/>
         <InputField
-          name="password" label="Password" type="password"
+          name="password" label="Password" type="password" 
           error={formErrors.password} fieldRef={passwordField} />
-        <Button variant="primary" type="submit">Login</Button>
+        <Button className='mt-5' variant="primary" type="submit">Login</Button>
       </Form>
 
       <hr />
-      <p>Don&apos;t have an account? <Link to="/register">Register here</Link>!</p>
+      <p className='text-white' >Don&apos;t have an account? <Link to="/register">Register here</Link>!</p>
 
   </>
      

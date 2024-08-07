@@ -1,13 +1,53 @@
-import { Link } from "react-router-dom";
-import { useContext } from "react";
-import {ArticleContext} from "../../Context/ArticleContext"
+import { Link, useNavigate } from "react-router-dom";
+import { useArticles } from "../../Context/ArticlesProvider"
 import { Spinner } from "../";
 import { COMMENT, GREEN, PURPLE } from "../../helpers/colors";
+import { useApi } from "../../Context/ApiProvider";
+import { useState } from "react";
 
 const AddArticle = () => {
 
-  const { loading, article, onArticleChange, groups, createArticle } =
-  useContext(ArticleContext);
+  const { articles, setArticles } = useArticles();
+  const [loading, setLoading] = useState(false);
+  const [article, setArticle] = useState({});
+  const navigate = useNavigate();
+  const api = useApi();
+
+
+  //************ FunCtions ******************/
+
+
+  const createArticleForm = async (event) => {
+    event.preventDefault();
+    try {
+
+      const { status, data } = await api.post('/Article', article);
+
+      if (status === 200) {
+        const allArticles = [...articles, data];
+        setArticles(allArticles);
+        setArticle({});
+        navigate("/articles");
+        window.location.reload();
+
+      }
+    } catch (err) {
+      console.log(err.message);
+      navigate("/articles");
+    }
+  };
+
+
+  const onArticleChange = (event) => {
+    setArticle({
+      ...article,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+
+  //******************************************/
+
 
   return (
     <>
@@ -19,31 +59,31 @@ const AddArticle = () => {
             <img
               src={require("../../assets/man-taking-note.png")}
               height="400px"
-              className="ps-5 ms-5"
+              className="ps-5 mt-4 ms-5"
               style={{
                 position: "absolute",
-                
+
                 top: "130px",
                 left: "500px",
-                
+
               }}
             />
-            <div className="container mt-3">
+            <div className="container mt-5">
               <div className="row">
                 <div className="col">
                   <p
                     className="h4 fw-bold text-center"
                     style={{ color: GREEN }}
                   >
-                      ساخت مقاله جدید
+                    ساخت مقاله جدید
                   </p>
                 </div>
               </div>
               <hr style={{ backgroundColor: GREEN }} />
-              <div className="row mt-5 pt-5 pe-5 me-5 ">
+              <div className="row mt-5 pt-5 pe-5 me-5">
                 <div className="col-md-4">
-                  <form onSubmit={createArticle}>
-                  <div className="mb-2">
+                  <form onSubmit={createArticleForm}>
+                    <div className="mb-2">
                       <input
                         name="title"
                         type="text"
@@ -104,7 +144,7 @@ const AddArticle = () => {
                           ))}
                       </select>
                     </div> */}
-                    <div className="mx-2">
+                    <div className="mx-2 mt-4">
                       <input
                         type="submit"
                         className="btn"
@@ -123,7 +163,7 @@ const AddArticle = () => {
                 </div>
               </div>
             </div>
-            
+
           </section>
         </>
       )}

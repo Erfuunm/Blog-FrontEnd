@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArticleContext } from "../../Context/ArticleContext";
+
 import { useApi } from '../../Context/ApiProvider';
 import { Spinner } from "../";
 import { CURRENTLINE, CYAN, PURPLE } from "../../helpers/colors";
@@ -14,7 +14,7 @@ const ViewArticle = () => {
 
   const [viewArticle, setViewArticle] = useState({});
 
-  const { loading } = useContext(ArticleContext);
+  const [loading, setLoading] = useState();
 
   //***** Fetch Data  *****/
 
@@ -26,14 +26,14 @@ const ViewArticle = () => {
     })();
   }
 
-  useEffect(() =>{
-  getdata();
+  useEffect(() => {
+    getdata();
   }, [getdata])
 
- //***** Fetch Data  *****/
+  //***** Fetch Data  *****/
 
-    return (
-      <>
+  return (
+    <>
       <section className="view-contact-intro p3 mt-5">
         <div className="container">
           <div className="row my-2 text-center">
@@ -97,12 +97,12 @@ const ViewArticle = () => {
               </div>
 
               <div className="text-center mt-3">
-              <img
-                src={require("../../assets/man-taking-note.png")}
-                height="300px"
-                style={{ opacity: "60%" }}
-              />
-            </div>
+                <img
+                  src={require("../../assets/man-taking-note.png")}
+                  height="300px"
+                  style={{ opacity: "60%" }}
+                />
+              </div>
             </section>
           )}
         </>
@@ -110,6 +110,5 @@ const ViewArticle = () => {
     </>
   );
 };
-  
-  export default ViewArticle;
-  
+
+export default ViewArticle;

@@ -5,16 +5,22 @@ import InputField from '../components/InputField'
 import { useApi } from '../Context/ApiProvider'
 
 
+
 export default function RegistrationPage() {
     const [formErrors, setFormErrors] = useState({});
+    const [isRegisterd , setIsRegistered] = useState();
+    const [NameCheck , setNameCheck] = useState();
     const firstNameField = useRef();
     const lastNameField = useRef();
     const usernameField = useRef();
+    
     const emailField = useRef();
     const passwordField = useRef();
     const password2Field = useRef();
    
     const api = useApi();
+
+    
   
     useEffect(() => {
       usernameField.current.focus();
@@ -34,10 +40,13 @@ export default function RegistrationPage() {
             password: passwordField.current.value
           });
           if (!data.ok) {
-            setFormErrors(data.body.errors.json);
+            setFormErrors(data.body.message);
+            setNameCheck(true);
+
           }
           else {
             setFormErrors({});
+            setIsRegistered(true);
            
           }
         }
@@ -56,7 +65,7 @@ export default function RegistrationPage() {
             error={formErrors.lasttName} fieldRef={lastNameField} />
           <InputField
           name="username" label="Username"
-          error={formErrors.username} fieldRef={usernameField} />
+          error={formErrors.message} fieldRef={usernameField} />
           <InputField
             name="email" label="Email address"
             error={formErrors.email} fieldRef={emailField} />
@@ -66,6 +75,10 @@ export default function RegistrationPage() {
           <InputField
             name="password2" label="Password again" type="password"
             error={formErrors.password2} fieldRef={password2Field} />
+            <br/>
+            { isRegisterd ? <h5 className='bg-success'>Register was success</h5> : null}
+            {NameCheck ? <h5 className='bg-danger'>User is Already Exist</h5> : null }
+            <br/>
           <Button variant="primary" type="submit" className='mt-5' >Register</Button>
         </Form>
       

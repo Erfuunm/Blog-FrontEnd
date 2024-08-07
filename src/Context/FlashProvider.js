@@ -4,15 +4,19 @@ export const FlashContext = createContext();
 let flashTimer;
 
 export default function FlashProvider({ children }) {
+
   const [flashMessage, setFlashMessage] = useState({});
   const [visible, setVisible] = useState(false);
+
+
+  //************ FunCtions ******************/
 
   const flash = (message, type, duration = 10) => {
     if (flashTimer) {
       clearTimeout(flashTimer);
       flashTimer = undefined;
     }
-    setFlashMessage({message, type});
+    setFlashMessage({ message, type });
     setVisible(true);
     if (duration) {
       flashTimer = setTimeout(hideFlash, duration * 1000);
@@ -23,8 +27,11 @@ export default function FlashProvider({ children }) {
     setVisible(false);
   };
 
+
+  //**********************************************/
+
   return (
-    <FlashContext.Provider value={{flash, hideFlash, flashMessage, visible}}>
+    <FlashContext.Provider value={{ flash, hideFlash, flashMessage, visible }}>
       {children}
     </FlashContext.Provider>
   );

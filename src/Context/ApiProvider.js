@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
-import  BlogApiClient  from "../services/ApiClient" 
+import BlogApiClient from "../services/ApiClient"
+
 
 const ApiContext = createContext();
 
@@ -14,5 +15,5 @@ export default function ApiProvider({ children }) {
 }
 
 export function useApi() {
-    return useContext(ApiContext);
-  }
+  return useContext(ApiContext);
+}

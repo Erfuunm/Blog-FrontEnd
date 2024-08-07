@@ -1,93 +1,95 @@
 const BASE_API_URL = "https://localhost:7282";
 export default class ApiClient {
-    constructor() {
-      this.base_url =  BASE_API_URL + '/api';
+  constructor() {
+    this.base_url = BASE_API_URL + '/api';
+  }
+
+  async request(options) {
+    let query = new URLSearchParams(options.query || {}).toString();
+    if (query !== '') {
+      query = '?' + query;
     }
-  
-    async request(options) {
-      let query = new URLSearchParams(options.query || {}).toString();
-      if (query !== '') {
-        query = '?' + query;
-      }
-  
-      let response;
-      try {
-        
-        response = await fetch(this.base_url + options.url + query, {
-          
-          method: options.method,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
-            ...options.headers,
-          },
-          body: options.body ? JSON.stringify(options.body) : null,
-        });
-      }
-      catch (error) {
-        response = {
-          ok: false,
-          status: 500,
-          json: async () => { return {
+
+    let response;
+    try {
+
+      response = await fetch(this.base_url + options.url + query, {
+
+        method: options.method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('accessToken'),
+          ...options.headers,
+        },
+        body: options.body ? JSON.stringify(options.body) : null,
+      });
+    }
+    catch (error) {
+      response = {
+        ok: false,
+        status: 500,
+        json: async () => {
+          return {
             code: 500,
             message: 'The server is unresponsive',
             description: error.toString(),
-          }; }
-        };
-      }
-  
-      return {
-        ok: response.ok,
-        status: response.status,
-        body: response.status !== 204 ? await response.json() : null
+          };
+        }
       };
     }
-  
-    async get(url, query, options) {
-      return this.request({method: 'GET', url, query, ...options});
-    }
-  
-    async post(url, body, options) {
-      return this.request({method: 'POST', url, body, ...options});
-    }
-  
-    async put(url, body, options) {
-      return this.request({method: 'PUT', url, body, ...options});
-    }
-  
-    async delete(url, options) {
-      return this.request({method: 'DELETE', url, ...options});
-    }
 
-    async login(username, password) {
-  
-        const response = await this.post('/Auth/login/' , {
-          userName: username,
-          password: password
-        } , {
-          headers: {
-            Authorization:  'Basic ' + btoa(username + ":" + password)
-          }
-        });
-        if (!response.ok) {
-          return response.status === 401 ? 'fail' : 'error';
-        }
-        localStorage.setItem('accessToken', response.body.message);
-        return 'ok';
-      }
-
-   
-
-    isAuthenticated() {
-      return localStorage.getItem('accessToken') !== null;
-    }
-
-    async logout() {
-      
-      localStorage.removeItem('accessToken');
-    }
-
-
-
-
+    return {
+      ok: response.ok,
+      status: response.status,
+      body: response.status !== 204 ? await response.json() : null
+    };
   }
+
+  async get(url, query, options) {
+    return this.request({ method: 'GET', url, query, ...options });
+  }
+
+  async post(url, body, options) {
+    return this.request({ method: 'POST', url, body, ...options });
+  }
+
+  async put(url, body, options) {
+    return this.request({ method: 'PUT', url, body, ...options });
+  }
+
+  async delete(url, options) {
+    return this.request({ method: 'DELETE', url, ...options });
+  }
+
+  async login(username, password) {
+
+    const response = await this.post('/Auth/login/', {
+      userName: username,
+      password: password
+    }, {
+      headers: {
+        Authorization: 'Basic ' + btoa(username + ":" + password)
+      }
+    });
+    if (!response.ok) {
+      return response.status === 401 ? 'fail' : 'error';
+    }
+    localStorage.setItem('accessToken', response.body.message);
+    return 'ok';
+  }
+
+
+
+  isAuthenticated() {
+    return localStorage.getItem('accessToken') !== null;
+  }
+
+  async logout() {
+
+    localStorage.removeItem('accessToken');
+  }
+
+
+
+
+}
