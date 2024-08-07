@@ -1,10 +1,6 @@
 
-import { useEffect, useState, useContext } from "react";
-
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
-import { ArticleContext } from "../../Context/ArticleContext";
-
 import { Spinner } from "../";
 import { COMMENT, ORANGE, PURPLE } from "../../helpers/colors";
 import { useApi } from '../../Context/ApiProvider';
@@ -13,30 +9,32 @@ import { useApi } from '../../Context/ApiProvider';
 const EditArticle = () => {
 
   const { articleId } = useParams();
-  const { articles , setArticles , setFilteredArticles , loading , setLoading , groups } = useContext(ArticleContext);
-  const api = useApi();
-  
+  const [loading, setLoading] = useState(false);
+  const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState({});
-
+  const api = useApi();
 
   const navigate = useNavigate();
-   
-  //***** Fetch Data  *****/
+
+  //************************ Fetch Data  ************************/
 
 
   const getdata = () => {
     (async () => {
       const response = await api.get('/Article/' + articleId);
       setArticle(response.ok ? response.body : null);
+      console.log(response);
     })();
   }
 
-  useEffect(() =>{
-  getdata();
+  useEffect(() => {
+    getdata();
   }, [])
 
- //***** Fetch Data  *****/
+  //*******************************************************************/
 
+
+  //********** Functions ***********/
 
   const onArticleChange = (event) => {
     setArticle({
@@ -45,44 +43,35 @@ const EditArticle = () => {
     });
   };
 
-
-
-
   const submitForm = async (event) => {
-
 
     event.preventDefault();
     try {
-      setLoading(true);
-     
-      const{ data , response }= await api.put('/Article/' + articleId , article  );
 
 
-      if (response === 200) {
-        setLoading(false);
+      const { data } = await api.put('/Article/' + articleId, article);
 
-        const allArticles = [...articles];
-        const articleIndex = allArticles.findIndex(
-          (c) => c.id === parseInt(articleId)
-        );
-        allArticles[articleIndex] = { ...data };
 
+      if (data !== null) {
+        const allArticles = [...articles, data];
         setArticles(allArticles);
-        setFilteredArticles(allArticles);
-
+        setArticle({});
         navigate("/articles");
+        window.location.reload();
       }
     } catch (err) {
       console.log(err);
-      setLoading(false);
+      navigate("/articles");
+      window.location.reload();
     }
   };
 
- //***** Fetch Data  *****/
+
+  //******************************************************/
 
 
-    return (
-      <>
+  return (
+    <>
       {loading ? (
         <Spinner />
       ) : (
@@ -103,7 +92,9 @@ const EditArticle = () => {
               >
                 <div className="col-md-8">
                   <form onSubmit={submitForm}>
-                  <div className="mb-2">
+
+
+                    <div className="mb-2">
                       <input
                         name="title"
                         type="text"
@@ -126,6 +117,8 @@ const EditArticle = () => {
                         placeholder="توضیحات"
                       />
                     </div>
+
+
                     <div className="mb-2">
                       <input
                         type="text"
@@ -137,6 +130,8 @@ const EditArticle = () => {
                         placeholder="نویسنده"
                       />
                     </div>
+
+
                     {/* <div className="mb-2">
                       <select
                         name="group"
@@ -154,11 +149,13 @@ const EditArticle = () => {
                           ))}
                       </select>
                     </div> */}
-                         <div className="mb-2">
+
+
+                    <div className="mb-2">
                       <input
                         type="text"
                         name="category"
-                        value={article.category}
+                        value={article.title}
                         onChange={onArticleChange}
                         className="form-control"
                         required={true}
@@ -168,12 +165,14 @@ const EditArticle = () => {
 
 
                     <div className="mb-2">
+
                       <input
                         type="submit"
                         className="btn"
                         style={{ backgroundColor: PURPLE }}
                         value="ویرایش مقاله"
                       />
+
                       <Link
                         to={"/articles"}
                         className="btn mx-2"
@@ -182,16 +181,19 @@ const EditArticle = () => {
                         انصراف
                       </Link>
                     </div>
+
                   </form>
                 </div>
+
                 <div className="col-md-4">
-                <img
-                      src="https://via.placeholder.com/200"
-                      alt=""
-                      className="img-fluid rounded"
-                      style={{ border: `1px solid ${PURPLE}` }}
-                    />
+                  <img
+                    src="https://via.placeholder.com/200"
+                    alt=""
+                    className="img-fluid rounded"
+                    style={{ border: `1px solid ${PURPLE}` }}
+                  />
                 </div>
+
               </div>
             </div>
 
@@ -202,14 +204,11 @@ const EditArticle = () => {
                 style={{ opacity: "60%" }}
               />
             </div>
-
-    
           </section>
         </>
       )}
     </>
   );
 };
-  
-  export default EditArticle;
-  
+
+export default EditArticle;

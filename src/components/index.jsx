@@ -1,6 +1,5 @@
-//Better way of importing
 
-/* Contact Components*/
+/* Article Components*/
 export { default as AddArticle } from "./Articles/AddArticle";
 export { default as EditArticle } from "./Articles/EditArticle";
 export { default as ViewArticle } from "./Articles/ViewArticle";

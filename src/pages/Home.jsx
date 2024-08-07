@@ -2,7 +2,7 @@
 
 import { useState , useEffect } from "react";
 import { useApi } from "../Context/ApiProvider";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import {
   CURRENTLINE,
@@ -11,11 +11,11 @@ import {
   YELLOW,
   COMMENT,
 } from "../helpers/colors";
+import { ArticleContext } from "../Context/ArticleContext";
+import { getAllArticles } from "../services/ArticleService";
 
- function Home() {
+ const Home = () => {
 
-
-  const api = useApi();
 
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState([]);
@@ -23,17 +23,29 @@ import {
   const [groups, setGroups] = useState([]);
   const [article, setArticle] = useState({});
   const [articleQuery, setArticleQuery] = useState({ text: "" });
-  
+
+  const api = useApi();
+  const navigate = useNavigate();
+
   const getdata = () => {
-    (async () => {
-      const response = await api.get('/Article');
-      setArticles(response.ok ? response.body : null);
-      setFilteredArticles(response.body)
-    })();
+
+
+
+    getAllArticles().then((result) =>{
+      setArticles(result.data)
+      setFilteredArticles(result.data)
+      console.log(result);
+    })
+    .catch((error) =>{
+      console.log(error);
+    });
+
+
+
   }
 
   useEffect(() =>{
-  getdata();
+   getdata();
   }, [])
 
   const createArticleForm = async (event) => {
@@ -139,7 +151,25 @@ import {
 
 
     return (
-     <div></div>
+     <div>
+
+<ArticleContext.Provider value={{
+      article,
+      setArticles,
+      setFilteredArticles,
+      articleQuery,
+      articles,
+      filteredArticles,
+      groups,
+      onArticleChange,
+      deleteArticle: confirmDelete,
+      createArticle: createArticleForm,
+      articleSearch,
+    }} >
+
+</ArticleContext.Provider>
+
+     </div>
     );
   };
 
