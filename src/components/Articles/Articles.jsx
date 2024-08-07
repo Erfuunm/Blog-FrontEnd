@@ -10,12 +10,14 @@ const Articles = () => {
 
   const { articles, loading, deleteArticle } = useContext(ArticleContext);
 
+  
+
   return (
     <>
     {loading ? (
         <Spinner />
       ) : (
-        <section className="container">
+        <section className="container mt-4 ">
           <div className="row">
             {articles.length > 0 ? (
               articles.map((c) => (
@@ -44,7 +46,7 @@ const Articles = () => {
         </section>
       )}
 
-     <section className="container mt-4">
+     <section className="container mt-5">
          <div className="grid">
            <div className="row">
              <div className="col">

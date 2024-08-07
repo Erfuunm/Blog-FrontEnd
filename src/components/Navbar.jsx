@@ -1,10 +1,16 @@
 
 import { useLocation } from "react-router-dom";
 
-import { BACKGROUND, PURPLE } from "../helpers/colors";
+import { BACKGROUND, PINK, PURPLE } from "../helpers/colors";
 import SearchArticle from "./Articles/SearchArticle";
 
 const Navbar = () => {
+
+
+  const logOut = (event) =>{
+    localStorage.clear();
+    window.location.reload();
+  }
 
   const location = useLocation();
 
@@ -21,12 +27,22 @@ const Navbar = () => {
               اپلیکیشن مدیریت{"  "}
               <span style={{ color: PURPLE }}>مقالات</span>
             </div>
+            
           </div>
           {location.pathname === "/articles" ? (
             <div className="col">
               <SearchArticle />
             </div>
           ) : null}
+              <div className="col" >
+
+<button onClick={logOut} className="btn mx-2" style={{ backgroundColor: PINK }}>
+         Log Out
+         <i className="fa fa-plus-circle mx-2" />
+       </button>
+
+</div>
+      
         </div>
       </div>
     </nav>

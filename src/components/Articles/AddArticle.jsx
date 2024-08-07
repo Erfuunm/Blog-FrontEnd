@@ -19,7 +19,7 @@ const AddArticle = () => {
             <img
               src={require("../../assets/man-taking-note.png")}
               height="400px"
-              className="ps-5 ms-5"
+              className="ps-5 mt-4 ms-5"
               style={{
                 position: "absolute",
                 
@@ -28,7 +28,7 @@ const AddArticle = () => {
                 
               }}
             />
-            <div className="container mt-3">
+            <div className="container mt-5">
               <div className="row">
                 <div className="col">
                   <p
@@ -40,7 +40,7 @@ const AddArticle = () => {
                 </div>
               </div>
               <hr style={{ backgroundColor: GREEN }} />
-              <div className="row mt-5 pt-5 pe-5 me-5 ">
+              <div className="row mt-5 pt-5 pe-5 me-5">
                 <div className="col-md-4">
                   <form onSubmit={createArticle}>
                   <div className="mb-2">
@@ -104,7 +104,7 @@ const AddArticle = () => {
                           ))}
                       </select>
                     </div> */}
-                    <div className="mx-2">
+                    <div className="mx-2 mt-4">
                       <input
                         type="submit"
                         className="btn"

@@ -67,22 +67,26 @@ const App = () => {
   const createArticleForm = async (event) => {
     event.preventDefault();
     try {
-      setLoading((prevLoading) => !prevLoading);
+      
       const { status, data } = await createArticle(article);
 
-      if (status === 201) {
+      if (status === 200) {
         const allArticles = [...articles, data];
 
         setArticles(allArticles);
         setFilteredArticles(allArticles);
 
         setArticle({});
-        setLoading((prevLoading) => !prevLoading);
-        navigate("/contacts");
+
+       
+        
+        navigate("/articles");
+        window.location.reload();
+       
       }
     } catch (err) {
       console.log(err.message);
-      setLoading((prevLoading) => !prevLoading);
+      
     }
   };
 
@@ -137,7 +141,7 @@ const App = () => {
 
   const removeArticle = async (articleId) => {
     try {
-      setLoading(true);
+      
 
       // const allArticles = [...articles];
 
@@ -145,7 +149,7 @@ const App = () => {
 
       const response = await axios.delete(`https://localhost:7282/api/Article/${articleId}`);
       
-      if (response === 200) {
+      if (response.status === 200) {
 
         getAllArticles().then((result) =>{
           setArticles(result.data)     
@@ -154,11 +158,13 @@ const App = () => {
           console.log(error);
         });
 
-        setLoading(false);
+        // window.location.reload();
+
+        
       }
     } catch (err) {
       console.log(err.message);
-      setLoading(false);
+    
     }
   };
 
@@ -177,8 +183,6 @@ const App = () => {
 
   return (
     <ArticleContext.Provider value={{
-      loading,
-      setLoading,
       article,
       setArticles,
       setFilteredArticles,
@@ -196,7 +200,7 @@ const App = () => {
 <FlashProvider>
   <ApiProvider>
     <UserProvider>
-      <Navbar />
+      
         <Routes>
                <Route path="/login" element={
                <PublicRoute><LoginPage /></PublicRoute>} />
@@ -206,13 +210,14 @@ const App = () => {
 
               <Route path="*" element={
                   <PrivateRoute>
+                    <Navbar />
                     <Routes>
-                      <Route path="/" element={<Home />} />
+                      <Route path="/" navigate to="/articles"/>
                       <Route path="/articles" element={<Articles />} />
                       <Route path="/articles/add" element={<AddArticle />} />
                       <Route path="/articles/:articleId" element={<ViewArticle />} />
                       <Route path="/articles/edit/:articleId" element={<EditArticle />} />
-                      <Route path="*" element={<Navigate to="/" />} />
+                      <Route path="*" element={<Navigate to="/articles" />} />
                   </Routes>
                 </PrivateRoute>
               } />
